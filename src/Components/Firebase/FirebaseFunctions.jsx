@@ -24,6 +24,7 @@ import {
   setDoc,
   deleteDoc,
   runTransaction,
+  Firestore,
 } from "firebase/firestore";
 export const createUser = async (email, pw, firstName, lastName) => {
   try {
@@ -96,8 +97,6 @@ export const storeData = async (name, message, id) => {
   }
 };
 
-
-
 // Define a variable to store cached data
 let cachedData = null;
 
@@ -131,7 +130,6 @@ export const fetchData = async () => {
   }
 };
 
-
 //LIKE POST
 export const likePost = async (userId, postId) => {
   const likeRef = doc(db, "likes", `${userId}_${postId}`);
@@ -154,7 +152,6 @@ export const likePost = async (userId, postId) => {
     throw error;
   }
 };
-
 
 // Function to get likes count for a specific post
 export const getLikesCount = async (postId) => {
@@ -183,3 +180,50 @@ export const isPostLikedByUser = async (userId, postId) => {
     throw error;
   }
 };
+const commentsCollection = collection(db, "comments");
+
+export const postComments = async (postId, comment) => {
+  try {
+      const timestamp = Timestamp.now().toDate();
+    
+
+    
+
+    await addDoc(commentsCollection, {
+      postId,
+      timestamp,
+      comment,
+    });
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    throw error;
+  }
+};
+export const getComments = async (postId, setuserComments) => {
+  try {
+    let commentQuery = query(commentsCollection, where("postId", "==", postId));
+
+    onSnapshot(commentQuery, (res) => {
+      const comments = res.docs.map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data(),
+        };
+      });
+
+      // Sort comments based on the timestamp property in descending order
+      comments.sort((a, b) => {
+        const timeA = a.timestamp;
+        const timeB = b.timestamp;
+
+        return timeB - timeA;
+      });
+
+      setuserComments(comments);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+

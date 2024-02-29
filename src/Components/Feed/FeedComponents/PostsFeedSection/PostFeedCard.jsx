@@ -5,20 +5,45 @@ import SendIcon from "@mui/icons-material/Send";
 import { Avatar } from "@nextui-org/react";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import {
+  
+  getComments,
   getLikesCount,
   isPostLikedByUser,
   likePost,
+  postComments,
   useAuthStatus,
 } from "../../../Firebase/FirebaseFunctions";
 import { auth, firebaseApp } from "../../../Firebase/FirebaseConfig";
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 import DropDown from "./dropDown";
 const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
-  const {user,isLoggedin}=useAuthStatus
+  const { user, isLoggedin } = useAuthStatus();
+ const myname = user?.displayName || "Unknown User";
   const [likesCount, setLikesCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const db = getFirestore(firebaseApp);
   const [isClicked, setIsClicked] = useState(false);
+  const [comment, setComment] = useState("");
+  const [userComments, setUserComments] = useState([]);
+ const [isCommentExpanded, setIsCommentExpanded] = useState(false);
+  const getCommentsByUser = () => {
+    getComments(postId, (comments) => {
+      // Sort comments based on the timestamp property in descending order
+      comments.sort((a, b) => b.timestamp - a.timestamp);
+
+      // Set the sorted comments using setUserComments
+      setUserComments(comments);
+    });
+  };
+
+
+  const handleComments = async () => {
+    try {
+      await postComments(postId, comment, myname);
+    } catch (error) {
+      console.error("Error storing comment:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,9 +103,24 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
     }
   }, [postId, userId]);
 
-  const [isCommentExpanded, setIsCommentExpanded] = useState(false);
-  const handleClick = () => {
-    setIsCommentExpanded((prev) => !prev);
+ 
+const handleClick = () => {
+  setIsCommentExpanded((prev) => !prev);
+  getCommentsByUser();
+  console.log(userComments);
+};
+  const formatDate = (timestamp) => {
+    const options = {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false, // Use 24-hour format
+    };
+
+    return new Date(timestamp.toDate()).toLocaleString("en-US", options);
   };
 
   return (
@@ -179,13 +219,52 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
           <div className="p-5">
             {/* Your comment input field can be placed here */}
             <textarea
-              className="w-full h-20 border rounded-md p-2"
+              className="w-full h-20 border rounded-md p-2 mb-4 break-all"
               placeholder="Write your comment..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
             ></textarea>
             {/* You can add a button to submit the comment */}
-            <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              onClick={handleComments}
+            >
               Submit
             </button>
+            {userComments.length > 0 && (
+              <div className="mt-4 space-y-5 break-all" >
+                {/* Render your comments here */}
+                {userComments.map((comment) => (
+                  <>
+                    {" "}
+                    {userComments.length > 0 && (
+                      <div className="border-t"></div>
+                    )}
+                    <div
+                      key={comment.id}
+                      className="flex items-start space-x-3"
+                    >
+                      <Avatar
+                        className="text-2xl bg-[#915907] text-white"
+                        name={user?.displayName?.charAt(0) || ""}
+                      />
+                      <div className="flex flex-col">
+                        <p className="text-gray-700 text-sm mb-1">
+                          {comment.timestamp
+                            ? formatDate(comment.timestamp)
+                            : ""}
+                        </p>
+                        <p className="text-gray-800">
+                          {user?.displayName}: {comment.comment}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                ))}
+                {/* Add a horizontal line between each comment */}
+                {userComments.length > 0 && <div className="border-t"></div>}
+              </div>
+            )}
           </div>
         )}
       </div>

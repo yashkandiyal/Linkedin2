@@ -13,7 +13,7 @@ const RightFeedSection = () => {
   return (
     <div
       id="right"
-      className="hidden md:block border rounded-xl bg-[#ffffff] w-1/5 p-4 h-96 shadow-xl"
+      className="hidden md:block border rounded-xl bg-[#ffffff] w-56 p-4 h-96 shadow-xl"
     >
       <h1 className="text-xl text-center font-semibold mb-4">LinkedIn News</h1>
       <ul className="list-disc pl-6">
