@@ -1,37 +1,42 @@
 import React, { useEffect, useState } from "react";
 import PostFeedCard from "./PostFeedCard";
-import { fetchData } from "../../../Firebase/FirebaseFunctions";
+import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 
 const PostsFeedSection = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const fetchDataAndSetPosts = async () => {
-      try {
-        const data = await fetchData(); // Fetch data
-        setPosts(data); // Set fetched data to state
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+    const db = getFirestore();
+    const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
+      const newPosts = [];
+      snapshot.forEach((doc) => {
+        newPosts.push({ postId: doc.id, ...doc.data() });
+      });
+
+      // Sort the newPosts array based on the timestamp
+      newPosts.sort((a, b) => b.timestamp - a.timestamp);
+
+      setPosts(newPosts);
+    });
+
+    return () => unsubscribe(); 
+  }, []); 
+ 
+  const formatDate = (timestamp) => {
+    const options = {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false, // Use 24-hour format
     };
 
-    fetchDataAndSetPosts();
-  }, [posts]); // Empty dependency array ensures this effect runs only once
-const formatDate = (timestamp) => {
-  const options = {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    hour12: false, // Use 24-hour format
+    return new Date(timestamp.toDate()).toLocaleString("en-US", options);
   };
-
-  return new Date(timestamp.toDate()).toLocaleString("en-US", options);
-};
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 ">
       {posts.map((post, index) => (
         <PostFeedCard
           key={index}

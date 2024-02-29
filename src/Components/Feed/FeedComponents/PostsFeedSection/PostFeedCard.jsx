@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
 import SendIcon from "@mui/icons-material/Send";
@@ -8,11 +8,13 @@ import {
   getLikesCount,
   isPostLikedByUser,
   likePost,
+  useAuthStatus,
 } from "../../../Firebase/FirebaseFunctions";
 import { auth, firebaseApp } from "../../../Firebase/FirebaseConfig";
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 import DropDown from "./dropDown";
 const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
+  const {user,isLoggedin}=useAuthStatus
   const [likesCount, setLikesCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const db = getFirestore(firebaseApp);
@@ -37,7 +39,7 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
     fetchData();
   }, [postId]);
 
-  const handleLike = () => {
+  const handleLike = useCallback(() => {
     const userId = auth.currentUser.uid;
     // Optimistically update UI
     setLikesCount((prevCount) => prevCount + (isLiked ? -1 : 1));
@@ -56,25 +58,38 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
         setIsLiked(!isLiked);
         setIsClicked(false); // Reset state if there's an error
       });
-  };
-
+  }, [postId, isLiked]);
   const currentUserID = auth.currentUser.uid;
-  const handleDelete = async () => {
+  const handleDelete = useCallback(() => {
     if (currentUserID === userId) {
       try {
         const postDocRef = doc(db, "posts", postId);
-        await deleteDoc(postDocRef);
-        // Handle post deletion, such as updating UI or showing a notification
+        deleteDoc(postDocRef)
+          .then(() => {
+            console.log("Post deleted successfully");
+            // Handle post deletion, such as updating UI or showing a notification
+          })
+          .catch((error) => {
+            console.error("Error deleting post:", error);
+          });
       } catch (error) {
         console.error("Error deleting post:", error);
       }
     }
+  }, [postId, userId]);
+
+  const [isCommentExpanded, setIsCommentExpanded] = useState(false);
+  const handleClick = () => {
+    setIsCommentExpanded((prev) => !prev);
   };
 
   return (
     <div>
       <div className=" rounded-xl flex flex-col bg-[#ffffff] shadow-md  md:w-full w-[22rem]">
         <div id="firstpart" className=" h-20 flex items-center gap-2 pl-5 ">
+          {isLoggedin && (
+            <div className="bg-green-500 rounded-full h-3 w-3 absolute top-0 right-0 -mt-1 -mr-1"></div>
+          )}
           <Avatar className="text-2xl bg-[#915907] text-white " />
           <div>
             <div className="flex justify-between items-center md:gap-[28rem] gap-[20vh]">
@@ -129,7 +144,10 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
               )}
             </div>
           </div>
-          <div className="group flex items-center gap-1 transform transition-transform hover:bg-green-100 p-3 rounded-xl">
+          <div
+            className="group flex items-center gap-1 transform transition-transform hover:bg-green-100 p-3 rounded-xl"
+            onClick={handleClick}
+          >
             <CommentIcon
               className="text-gray-500 group-hover:text-green-500 group-hover:bg-green-100 hover:scale-110 hover:rotate-6 rounded-full transition-all"
               fontSize="medium"
@@ -157,6 +175,19 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
             </div>
           </div>
         </div>
+        {isCommentExpanded && (
+          <div className="p-5">
+            {/* Your comment input field can be placed here */}
+            <textarea
+              className="w-full h-20 border rounded-md p-2"
+              placeholder="Write your comment..."
+            ></textarea>
+            {/* You can add a button to submit the comment */}
+            <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md">
+              Submit
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

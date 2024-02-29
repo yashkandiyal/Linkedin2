@@ -23,6 +23,7 @@ import {
   Timestamp,
   setDoc,
   deleteDoc,
+  runTransaction,
 } from "firebase/firestore";
 export const createUser = async (email, pw, firstName, lastName) => {
   try {
@@ -95,7 +96,17 @@ export const storeData = async (name, message, id) => {
   }
 };
 
+
+
+// Define a variable to store cached data
+let cachedData = null;
+
 export const fetchData = async () => {
+  // Check if cached data exists and return it if available
+  if (cachedData) {
+    return cachedData;
+  }
+
   const db = getFirestore();
   const dataCollection = collection(db, "posts");
 
@@ -106,9 +117,13 @@ export const fetchData = async () => {
     querySnapshot.forEach((doc) => {
       postData.push({ postId: doc.id, ...doc.data() }); // Push document data along with postId into the array
     });
-    const newPostData=postData.sort((a,b)=>{
-    return b.timestamp-a.timestamp
-    })
+
+    // Sort the data by timestamp
+    const newPostData = postData.sort((a, b) => b.timestamp - a.timestamp);
+
+    // Update the cached data
+    cachedData = newPostData;
+
     return newPostData; // Return the array containing fetched data
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -116,27 +131,30 @@ export const fetchData = async () => {
   }
 };
 
+
 //LIKE POST
-// Function to get likes for a specific post
 export const likePost = async (userId, postId) => {
+  const likeRef = doc(db, "likes", `${userId}_${postId}`);
+
   try {
-    const likeRef = doc(db, "likes", `${userId}_${postId}`);
+    await runTransaction(db, async (transaction) => {
+      // Check if the like document exists within the transaction
+      const likeDoc = await transaction.get(likeRef);
 
-    // Check if the like document exists
-    const likeDoc = await getDoc(likeRef);
-
-    if (likeDoc.exists()) {
-      // Unlike the post if already liked
-      await deleteDoc(likeRef);
-    } else {
-      // Like the post if not already liked
-      await setDoc(likeRef, { userId, postId });
-    }
+      if (likeDoc.exists()) {
+        // Unlike the post if already liked
+        transaction.delete(likeRef);
+      } else {
+        // Like the post if not already liked
+        transaction.set(likeRef, { userId, postId });
+      }
+    });
   } catch (error) {
     console.error("Error toggling like:", error);
     throw error;
   }
 };
+
 
 // Function to get likes count for a specific post
 export const getLikesCount = async (postId) => {

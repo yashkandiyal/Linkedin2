@@ -18,20 +18,21 @@ const Feed = () => {
   };
   return (
     <>
-      <MyNavbar />
-      <div className="">
-        <div
-          id="main-container"
-          className="flex justify-center md:gap-12 p-10 mx-36 "
-        >
-          <LeftFeedSection user={user} />
-          <MiddleFeedSection
-            handleButtonClick={handleButtonClick}
-            isModalOpen={isModalOpen}
-            handleCloseModal={handleCloseModal}
-            user={user}
-          />
-          <RightFeedSection />
+      <div className="bg-[#f4f2ee]">
+        <MyNavbar />
+        <div className="bg-[#f4f2ee] min-h-screen">
+          <div className="pt-16 px-10 md:px-36">
+            <div id="main-container" className="flex justify-center md:gap-12">
+              <LeftFeedSection user={user} />
+              <MiddleFeedSection
+                handleButtonClick={handleButtonClick}
+                isModalOpen={isModalOpen}
+                handleCloseModal={handleCloseModal}
+                user={user}
+              />
+              <RightFeedSection />
+            </div>
+          </div>
         </div>
       </div>
     </>

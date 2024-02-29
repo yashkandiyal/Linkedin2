@@ -11,7 +11,7 @@ import YourPostsSection from "./Components/YourPosts/YourPostsSection";
 const App = () => {
   const { isLoggedin } = useAuthStatus();
   return (
-    <div className="bg-[#f4f2ee]">
+    <div className="bg-[#f4f2ee] min-h-screen">
       <Routes>
         <Route path="/" element={<Loginpage />} />
         <Route path="/register" element={<Register />} />

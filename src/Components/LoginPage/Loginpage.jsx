@@ -24,36 +24,27 @@ const LoginPage = () => {
   const Login = async () => {
     try {
       await login(email, pw);
-    } catch (error) {
-     
-    }
+    } catch (error) {}
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await login(email, pw);
-    
-    } catch (error) {
-     
-    }
+    } catch (error) {}
   };
 
   const loginGoogle = async () => {
     try {
       await loginWithGoogle();
-     
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
   const goToRegister = () => {
     navigate("/register");
   };
   return (
     <form onSubmit={handleSubmit}>
-      
-      <div className="flex flex-col justify-center items-center h-screen bg-gray-100 font-roboto">
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-200 font-sans">
         <div className="max-w-md w-full">
           <motion.h1
             className="text-3xl font-bold mb-4 text-center font-sans"
@@ -68,7 +59,7 @@ const LoginPage = () => {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="max-w-96 w-full bg-white p-8 rounded-lg shadow-lg"
+          className=" lg:max-w-96 max-w-80 w-full bg-white p-8 rounded-lg shadow-lg"
         >
           <div className="mb-3">
             <label
