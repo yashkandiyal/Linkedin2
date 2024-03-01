@@ -144,7 +144,7 @@ export const likePost = async (userId, postId) => {
         transaction.delete(likeRef);
       } else {
         // Like the post if not already liked
-        transaction.set(likeRef, { userId, postId });
+        transaction.set(likeRef, { userId, postId});
       }
     });
   } catch (error) {
@@ -182,7 +182,7 @@ export const isPostLikedByUser = async (userId, postId) => {
 };
 const commentsCollection = collection(db, "comments");
 
-export const postComments = async (postId, comment) => {
+export const postComments = async (myname,postId, comment) => {
   try {
       const timestamp = Timestamp.now().toDate();
     
@@ -193,6 +193,7 @@ export const postComments = async (postId, comment) => {
       postId,
       timestamp,
       comment,
+      myname
     });
   } catch (error) {
     console.error("Error adding comment:", error);

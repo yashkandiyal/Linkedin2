@@ -5,7 +5,6 @@ import SendIcon from "@mui/icons-material/Send";
 import { Avatar } from "@nextui-org/react";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import {
-  
   getComments,
   getLikesCount,
   isPostLikedByUser,
@@ -16,17 +15,17 @@ import {
 import { auth, firebaseApp } from "../../../Firebase/FirebaseConfig";
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 import DropDown from "./dropDown";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
   const { user, isLoggedin } = useAuthStatus();
- const myname = user?.displayName || "Unknown User";
+  const myname = user?.displayName;
   const [likesCount, setLikesCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const db = getFirestore(firebaseApp);
   const [isClicked, setIsClicked] = useState(false);
   const [comment, setComment] = useState("");
   const [userComments, setUserComments] = useState([]);
- const [isCommentExpanded, setIsCommentExpanded] = useState(false);
+  const [isCommentExpanded, setIsCommentExpanded] = useState(false);
   const getCommentsByUser = () => {
     getComments(postId, (comments) => {
       // Sort comments based on the timestamp property in descending order
@@ -37,11 +36,10 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
     });
   };
 
-
   const handleComments = async () => {
     try {
-      await postComments(postId, comment, myname);
-      setComment("")
+      await postComments(myname, postId, comment);
+      setComment("");
     } catch (error) {
       console.error("Error storing comment:", error);
     }
@@ -73,7 +71,7 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
     setIsLiked(!isLiked);
     setIsClicked(true); // Set state to indicate that the button is clicked
 
-    likePost(userId, postId)
+    likePost( userId, postId)
       .then(() => {
         console.log("Like toggled successfully");
         setIsClicked(false); // Reset state after successful like action
@@ -105,12 +103,10 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
     }
   }, [postId, userId]);
 
- 
-const handleClick = () => {
-  setIsCommentExpanded((prev) => !prev);
-  getCommentsByUser();
-  
-};
+  const handleClick = () => {
+    setIsCommentExpanded((prev) => !prev);
+    getCommentsByUser();
+  };
   const formatDate = (timestamp) => {
     const options = {
       year: "numeric",
@@ -126,163 +122,145 @@ const handleClick = () => {
   };
 
   return (
-    <div>
-      <div className=" rounded-xl flex flex-col bg-[#ffffff] shadow-md  md:w-full w-[22rem]">
-        <div id="firstpart" className=" h-20 flex items-center gap-2 pl-5 ">
-          
-          <Avatar className="text-2xl bg-[#915907] text-white " />
-          <div>
-            <div className="flex justify-between items-center md:gap-[28rem] gap-[20vh]">
-              <div className=" text-sm font-medium">{name}</div>
-              {currentUserID === userId && (
-                <>
-                  <DropDown handleDelete={handleDelete} />
-                </>
-              )}
-            </div>
-
-            <div className=" text-xs ">Software Engineer</div>
-            <div className=" text-xs">posted {timestamp}</div>
+    <div className="rounded-xl flex flex-col bg-[#ffffff] shadow-lg lg:w-auto w-full md:max-w-full">
+      <div id="firstpart" className="h-20 flex items-center gap-2 pl-5">
+        <Avatar className="text-2xl bg-[#915907] text-white" />
+        <div className="flex flex-col flex-grow">
+          <div className="flex justify-between items-center">
+            <div className="text-sm font-medium">{name}</div>
+            {currentUserID === userId && (
+              <DropDown handleDelete={handleDelete} />
+            )}
           </div>
-        </div>{" "}
-        {/* Example height */}
-        <div className="grid grid-rows-[auto,1fr,auto]">
-          <div className="border "></div> {/* Empty grid area */}
-          <div id="secondpart" className="  overflow-auto  pl-5">
-            <p className="whitespace-pre-wrap my-2">{message}</p>
-          </div>
-          <div className="border "></div> {/* Empty grid area */}
+          <div className="text-xs">Software Engineer</div>
+          <div className="text-xs">posted {timestamp}</div>
         </div>
-        <div className="h-[2.2rem] flex justify-center items-center md:gap-[2.9rem] gap-[2.7rem] my-2">
-          <div
-            className="group flex items-center gap-1 transform transition-transform hover:bg-blue-100 p-3 rounded-xl"
-            onClick={handleLike}
-          >
-            <ThumbUpIcon
-              className={`${
-                isLiked ? "text-blue-600" : "text-gray-500"
-              } `}
-              fontSize="medium"
-            />
-
-            <div className="group-hover:text-blue-500 cursor-pointer">
-              {isLiked ? (
-                <div>
-                  <span> ({likesCount})</span>
-                </div>
-              ) : (
-                <>
-                  {likesCount === 0 ? (
-                    <span className="hidden md:inline">Like</span>
-                  ) : (
-                    <div>
-                      <span className="hidden md:inline">Like</span>
-                      <span> ({likesCount})</span>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-          <div
-            className="group flex items-center gap-1 transform transition-transform hover:bg-green-100 p-3 rounded-xl"
-            onClick={handleClick}
-          >
-            <CommentIcon
-              className="text-gray-500 group-hover:text-green-500 group-hover:bg-green-100 hover:scale-110 hover:rotate-6 rounded-full transition-all"
-              fontSize="medium"
-            />
-            <div className="group-hover:text-green-500 cursor-pointer hidden md:block">
-              Comment
-            </div>
-          </div>
-          <div className="group flex items-center gap-1 transform transition-transform hover:bg-purple-100 p-3 rounded-xl">
-            <SendIcon
-              className="text-gray-500 group-hover:text-purple-500 group-hover:bg-purple-100 hover:scale-110 hover:rotate-6 rounded-full transition-all"
-              fontSize="medium"
-            />
-            <div className="group-hover:text-purple-500 cursor-pointer hidden md:block">
-              Share
-            </div>
-          </div>
-          <div className="group flex items-center gap-1 transform transition-transform hover:bg-red-100 p-3 rounded-xl">
-            <AutorenewIcon
-              className="text-gray-500 group-hover:text-red-500 group-hover:bg-red-100 hover:scale-110 hover:rotate-6 rounded-full transition-all"
-              fontSize="medium"
-            />
-            <div className="group-hover:text-red-500 cursor-pointer hidden md:block">
-              Repost
-            </div>
+      </div>
+      {/* Example height */}
+      <div className="grid grid-rows-[auto,1fr,auto]">
+        <div className="border"></div> {/* Empty grid area */}
+        <div id="secondpart" className="overflow-auto pl-5">
+          <p className="whitespace-pre-wrap my-2">{message}</p>
+        </div>
+        <div className="border"></div> {/* Empty grid area */}
+      </div>
+      <div className="h-[2.2rem] flex justify-center items-center mx-auto  my-2 w-fit gap-10 lg:gap-10">
+        <div
+          className="group flex items-center gap-1 transform transition-transform hover:bg-blue-100 p-3 rounded-xl"
+          onClick={handleLike}
+        >
+          <ThumbUpIcon
+            className={`${isLiked ? "text-blue-600" : "text-gray-500"} `}
+            fontSize="medium"
+          />
+          <div className="group-hover:text-blue-500 cursor-pointer">
+            {isLiked ? (
+              <div>
+                <span> ({likesCount})</span>
+              </div>
+            ) : (
+              <>
+                {likesCount === 0 ? (
+                  <span className="hidden lg:inline">Like</span>
+                ) : (
+                  <div>
+                    <span className="hidden lg:inline">Like</span>
+                    <span> ({likesCount})</span>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
-        {isCommentExpanded && (
-          <motion.div
-            className="p-5"
+        <div
+          className="group flex items-center gap-1 transform transition-transform hover:bg-green-100 p-3 rounded-xl"
+          onClick={handleClick}
+        >
+          <CommentIcon
+            className="text-gray-500 group-hover:text-green-500 group-hover:bg-green-100 hover:scale-110 hover:rotate-6 rounded-full transition-all"
+            fontSize="medium"
+          />
+          <div className="group-hover:text-green-500 cursor-pointer hidden lg:block">
+            Comment
+          </div>
+        </div>
+        <div className="group flex items-center gap-1 transform transition-transform hover:bg-purple-100 p-3 rounded-xl">
+          <SendIcon
+            className="text-gray-500 group-hover:text-purple-500 group-hover:bg-purple-100 hover:scale-110 hover:rotate-6 rounded-full transition-all"
+            fontSize="medium"
+          />
+          <div className="group-hover:text-purple-500 cursor-pointer hidden lg:block">
+            Share
+          </div>
+        </div>
+        <div className="group flex items-center gap-1 transform transition-transform hover:bg-red-100 p-3 rounded-xl">
+          <AutorenewIcon
+            className="text-gray-500 group-hover:text-red-500 group-hover:bg-red-100 hover:scale-110 hover:rotate-6 rounded-full transition-all"
+            fontSize="medium"
+          />
+          <div className="group-hover:text-red-500 cursor-pointer hidden lg:block">
+            Repost
+          </div>
+        </div>
+      </div>
+      {isCommentExpanded && (
+        <motion.div
+          className="p-5"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+        >
+          <motion.textarea
+            className="w-full h-20 border rounded-lg p-2 mb-4 break-all"
+            placeholder="Write your comment..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+          ></motion.textarea>
+          <motion.button
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+            onClick={handleComments}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
           >
-            {/* Your comment input field can be placed here */}
-            <motion.textarea
-              className="w-full h-20 border rounded-md p-2 mb-4 break-all"
-              placeholder="Write your comment..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-            ></motion.textarea>
-            {/* You can add a button to submit the comment */}
-            <motion.button
-              className="bg-blue-500 text-white px-4 py-2 rounded-md"
-              onClick={handleComments}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-            >
-              Submit
-            </motion.button>
-            {userComments.length > 0 && (
-              <div className="mt-4 space-y-5 break-all">
-                {/* Render your comments here */}
-                {userComments.map((comment, index) => (
-                  <>
-                    {" "}
-                    {userComments.length > 0 && (
-                      <div className="border-t"></div>
-                    )}
-                    <motion.div
-                      key={comment.id}
-                      className="flex items-start space-x-3"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <Avatar
-                        className="text-2xl bg-[#915907] text-white"
-                        name={user?.displayName?.charAt(0) || ""}
-                      />
-                      <div className="flex flex-col">
-                        <p className="text-gray-700 text-sm mb-1">
-                          {comment.timestamp
-                            ? formatDate(comment.timestamp)
-                            : ""}
-                        </p>
-                        <p className="text-gray-800">
-                          {user?.displayName}: {comment.comment}
-                        </p>
-                      </div>
-                    </motion.div>
-                  </>
-                ))}
-                {/* Add a horizontal line between each comment */}
-                {userComments.length > 0 && <div className="border-t"></div>}
-              </div>
-            )}
-          </motion.div>
-        )}
-      </div>
+            Submit
+          </motion.button>
+          {userComments.length > 0 && (
+            <div className="mt-4 space-y-5 break-all">
+              {userComments.map((comment, index) => (
+                <>
+                  {userComments.length > 0 && <div className="border-t"></div>}
+                  <motion.div
+                    key={comment.id}
+                    className="flex items-start space-x-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Avatar
+                      className="text-2xl bg-[#915907] text-white"
+                      name={comment.myname?.charAt(0) || ""}
+                    />
+                    <div className="flex flex-col">
+                      <p className="text-gray-700 text-sm mb-1">
+                        {comment.timestamp ? formatDate(comment.timestamp) : ""}
+                      </p>
+                      <p className="text-gray-800">
+                        {comment.myname}: {comment.comment}
+                      </p>
+                    </div>
+                  </motion.div>
+                </>
+              ))}
+              {userComments.length > 0 && <div className="border-t"></div>}
+            </div>
+          )}
+        </motion.div>
+      )}
     </div>
   );
 };

@@ -7,7 +7,7 @@ const LeftFeedSection = ({ user }) => {
     <div>
       <div
         id="left"
-        className="hidden md:block  border  h-96 rounded-xl bg-[#ffffff] w-56 shadow-xl"
+        className="hidden lg:block  border  h-96 rounded-xl bg-[#ffffff] w-56 shadow-xl"
       >
         <div id="userProfile" className=" flex flex-col h-full ">
           <div
@@ -30,8 +30,8 @@ const LeftFeedSection = ({ user }) => {
             id="part2"
             className="border-solid border h-1/4 w-full flex flex-col justify-center items-center"
           >
-            <div className="text-md">Your connections-100 </div>
-            <div className="text-md">Requests-3</div>
+            <div className="text-lg">Your connections-100 </div>
+            <div className="text-lg">Requests-3</div>
           </div>
           <div
             id="part3-premium"
