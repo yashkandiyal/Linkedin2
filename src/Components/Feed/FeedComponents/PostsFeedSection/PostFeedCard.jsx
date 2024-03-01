@@ -16,6 +16,7 @@ import {
 import { auth, firebaseApp } from "../../../Firebase/FirebaseConfig";
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 import DropDown from "./dropDown";
+import { motion } from 'framer-motion';
 const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
   const { user, isLoggedin } = useAuthStatus();
  const myname = user?.displayName || "Unknown User";
@@ -40,6 +41,7 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
   const handleComments = async () => {
     try {
       await postComments(postId, comment, myname);
+      setComment("")
     } catch (error) {
       console.error("Error storing comment:", error);
     }
@@ -107,7 +109,7 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
 const handleClick = () => {
   setIsCommentExpanded((prev) => !prev);
   getCommentsByUser();
-  console.log(userComments);
+  
 };
   const formatDate = (timestamp) => {
     const options = {
@@ -127,9 +129,7 @@ const handleClick = () => {
     <div>
       <div className=" rounded-xl flex flex-col bg-[#ffffff] shadow-md  md:w-full w-[22rem]">
         <div id="firstpart" className=" h-20 flex items-center gap-2 pl-5 ">
-          {isLoggedin && (
-            <div className="bg-green-500 rounded-full h-3 w-3 absolute top-0 right-0 -mt-1 -mr-1"></div>
-          )}
+          
           <Avatar className="text-2xl bg-[#915907] text-white " />
           <div>
             <div className="flex justify-between items-center md:gap-[28rem] gap-[20vh]">
@@ -160,8 +160,8 @@ const handleClick = () => {
           >
             <ThumbUpIcon
               className={`${
-                isLiked ? "text-gray-900" : "text-gray-500"
-              } group-hover:text-blue-500 group-hover:bg-blue-100 hover:scale-110 hover:rotate-6 rounded-full transition-all`}
+                isLiked ? "text-blue-600" : "text-gray-500"
+              } `}
               fontSize="medium"
             />
 
@@ -216,33 +216,48 @@ const handleClick = () => {
           </div>
         </div>
         {isCommentExpanded && (
-          <div className="p-5">
+          <motion.div
+            className="p-5"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+          >
             {/* Your comment input field can be placed here */}
-            <textarea
+            <motion.textarea
               className="w-full h-20 border rounded-md p-2 mb-4 break-all"
               placeholder="Write your comment..."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-            ></textarea>
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+            ></motion.textarea>
             {/* You can add a button to submit the comment */}
-            <button
+            <motion.button
               className="bg-blue-500 text-white px-4 py-2 rounded-md"
               onClick={handleComments}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
             >
               Submit
-            </button>
+            </motion.button>
             {userComments.length > 0 && (
-              <div className="mt-4 space-y-5 break-all" >
+              <div className="mt-4 space-y-5 break-all">
                 {/* Render your comments here */}
-                {userComments.map((comment) => (
+                {userComments.map((comment, index) => (
                   <>
                     {" "}
                     {userComments.length > 0 && (
                       <div className="border-t"></div>
                     )}
-                    <div
+                    <motion.div
                       key={comment.id}
                       className="flex items-start space-x-3"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      transition={{ delay: index * 0.1 }}
                     >
                       <Avatar
                         className="text-2xl bg-[#915907] text-white"
@@ -258,14 +273,14 @@ const handleClick = () => {
                           {user?.displayName}: {comment.comment}
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
                   </>
                 ))}
                 {/* Add a horizontal line between each comment */}
                 {userComments.length > 0 && <div className="border-t"></div>}
               </div>
             )}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>
