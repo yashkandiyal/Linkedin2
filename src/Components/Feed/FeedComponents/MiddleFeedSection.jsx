@@ -16,7 +16,7 @@ const MiddleFeedSection = ({
       id="middle"
       className="border  lg:w-2/4 w-[screen]  rounded-xl bg-[#ffffff] h-[8rem] "
     >
-      <div className="mb-11 border border-solid rounded-xl h-32 w-[22rem] lg:w-auto shadow-xl">
+      <div className="mb-11 border border-solid rounded-xl h-32 w-[23rem] lg:w-auto shadow-xl">
         <div className="flex mt-4 lg:justify-center  justify-around gap-5 mx-5">
           <div className="flex-[0.2]">
             <Avatar
@@ -35,16 +35,25 @@ const MiddleFeedSection = ({
           </button>
         </div>
         <div className="flex justify-around lg:gap-20 gap-5 mt-6 lg:mx-10">
-          <div className="flex gap-1 items-center">
+          <div
+            className="flex gap-1 items-center cursor-pointer"
+            onClick={handleButtonClick}
+          >
             <GallerySvg />
             <h2 className=" lg:text-lg text-sm">Media</h2>
           </div>
 
-          <div className="flex gap-1 items-center">
+          <div
+            className="flex gap-1 items-center cursor-pointer"
+            onClick={handleButtonClick}
+          >
             <EventSvg />
             <h2 className=" lg:text-lg text-sm">Event</h2>
           </div>
-          <div className="flex gap-1 items-center">
+          <div
+            className="flex gap-1 items-center cursor-pointer"
+            onClick={handleButtonClick}
+          >
             <ArticleSvg />
             <h2 className=" lg:text-lg text-sm">Article</h2>
           </div>

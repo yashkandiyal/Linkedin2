@@ -71,7 +71,7 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
     setIsLiked(!isLiked);
     setIsClicked(true); // Set state to indicate that the button is clicked
 
-    likePost( userId, postId)
+    likePost(userId, postId)
       .then(() => {
         console.log("Like toggled successfully");
         setIsClicked(false); // Reset state after successful like action
@@ -102,10 +102,12 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
       }
     }
   }, [postId, userId]);
+  useEffect(() => {
+    getCommentsByUser();
+  }, [userComments]);
 
   const handleClick = () => {
     setIsCommentExpanded((prev) => !prev);
-    getCommentsByUser();
   };
   const formatDate = (timestamp) => {
     const options = {
@@ -177,16 +179,23 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
           onClick={handleClick}
         >
           <CommentIcon
-            className="text-gray-500 group-hover:text-green-500 group-hover:bg-green-100 hover:scale-110 hover:rotate-6 rounded-full transition-all"
+            className="text-gray-500 group-hover:text-green-500 group-hover:bg-green-100 hover:scale-110 rounded-full transition-all"
             fontSize="medium"
           />
-          <div className="group-hover:text-green-500 cursor-pointer hidden lg:block">
-            Comment
+          <div className="group-hover:text-green-500 cursor-pointer flex gap-1">
+            <span className="lg:block hidden">Comment</span>{" "}
+            <span>
+              {userComments.length > 0 ? (
+                <span>({userComments.length})</span>
+              ) : (
+                <></>
+              )}
+            </span>
           </div>
         </div>
         <div className="group flex items-center gap-1 transform transition-transform hover:bg-purple-100 p-3 rounded-xl">
           <SendIcon
-            className="text-gray-500 group-hover:text-purple-500 group-hover:bg-purple-100 hover:scale-110 hover:rotate-6 rounded-full transition-all"
+            className="text-gray-500 group-hover:text-purple-500 group-hover:bg-purple-100 hover:scale-110  rounded-full transition-all"
             fontSize="medium"
           />
           <div className="group-hover:text-purple-500 cursor-pointer hidden lg:block">
@@ -195,7 +204,7 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
         </div>
         <div className="group flex items-center gap-1 transform transition-transform hover:bg-red-100 p-3 rounded-xl">
           <AutorenewIcon
-            className="text-gray-500 group-hover:text-red-500 group-hover:bg-red-100 hover:scale-110 hover:rotate-6 rounded-full transition-all"
+            className="text-gray-500 group-hover:text-red-500 group-hover:bg-red-100 hover:scale-110  rounded-full transition-all"
             fontSize="medium"
           />
           <div className="group-hover:text-red-500 cursor-pointer hidden lg:block">
@@ -211,7 +220,7 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
           exit={{ opacity: 0, y: 20 }}
         >
           <motion.textarea
-            className="w-full h-20 border rounded-lg p-2 mb-4 break-all"
+            className="w-full  border rounded-lg p-2 mb-4 break-words h-auto  "
             placeholder="Write your comment..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
@@ -241,15 +250,18 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
                     exit={{ opacity: 0, y: 20 }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <Avatar
-                      className="text-2xl bg-[#915907] text-white"
-                      name={comment.myname?.charAt(0) || ""}
-                    />
+                    {" "}
+                    <div>
+                      <Avatar
+                        className="text-2xl bg-[#915907] text-white"
+                        name={comment.myname?.charAt(0) || ""}
+                      />
+                    </div>
                     <div className="flex flex-col">
                       <p className="text-gray-700 text-sm mb-1">
                         {comment.timestamp ? formatDate(comment.timestamp) : ""}
                       </p>
-                      <p className="text-gray-800">
+                      <p className="text-gray-800 break-words">
                         {comment.myname}: {comment.comment}
                       </p>
                     </div>
