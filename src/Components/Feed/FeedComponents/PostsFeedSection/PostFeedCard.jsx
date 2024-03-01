@@ -84,7 +84,7 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
         setIsClicked(false); // Reset state if there's an error
       });
   }, [postId, isLiked]);
-  const currentUserID = auth.currentUser.uid;
+  const currentUserID = auth.currentUser?.uid;
   const handleDelete = useCallback(() => {
     if (currentUserID === userId) {
       try {

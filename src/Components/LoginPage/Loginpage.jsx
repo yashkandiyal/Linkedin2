@@ -28,7 +28,7 @@ const handleSubmit = async (e) => {
   try {
     await login(email, pw);
     // Set logged in status in local storage upon successful login
-    localStorage.setItem("isLoggedIn", "true");
+   
   } catch (error) {}
 };
 
@@ -36,7 +36,7 @@ const loginGoogle = async () => {
   try {
     await loginWithGoogle();
     // Set logged in status in local storage upon successful login
-    localStorage.setItem("isLoggedIn", "true");
+   
   } catch (error) {}
 };
 const goToRegister = () => {
