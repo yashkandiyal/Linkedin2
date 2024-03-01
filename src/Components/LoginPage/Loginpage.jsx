@@ -9,39 +9,40 @@ import {
 import GoogleSvg from "./GoogleSvg";
 
 const LoginPage = () => {
-  const status = useAuthStatus();
-  console.log(status);
-  const [pw, setpw] = useState("");
-  const [email, setEmail] = useState("");
-  const navigate = useNavigate();
-  const { isLoggedin } = useAuthStatus();
-  useEffect(() => {
-    if (isLoggedin) {
-      navigate("/feed");
-    }
-  }, [isLoggedin]);
+const status = useAuthStatus();
+console.log(status);
+const [pw, setpw] = useState("");
+const [email, setEmail] = useState("");
+const navigate = useNavigate();
+const { isLoggedin } = useAuthStatus();
+useEffect(() => {
+  if (isLoggedin) {
+    navigate("/feed");
+  }
+}, [isLoggedin,navigate]);
 
-  const Login = async () => {
-    try {
-      await login(email, pw);
-    } catch (error) {}
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await login(email, pw);
-    } catch (error) {}
-  };
 
-  const loginGoogle = async () => {
-    try {
-      await loginWithGoogle();
-    } catch (error) {}
-  };
-  const goToRegister = () => {
-    navigate("/register");
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await login(email, pw);
+    // Set logged in status in local storage upon successful login
+    localStorage.setItem("isLoggedIn", "true");
+  } catch (error) {}
+};
+
+const loginGoogle = async () => {
+  try {
+    await loginWithGoogle();
+    // Set logged in status in local storage upon successful login
+    localStorage.setItem("isLoggedIn", "true");
+  } catch (error) {}
+};
+const goToRegister = () => {
+  navigate("/register");
+};
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col justify-center items-center h-screen bg-gray-200 font-sans">
@@ -96,7 +97,7 @@ const LoginPage = () => {
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-3xl hover:bg-blue-600 transition duration-300 mb-2 text-lg"
-            onClick={Login}
+            
           >
             Log in
           </button>
