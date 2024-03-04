@@ -8,6 +8,7 @@ import { useAuthStatus } from "./Components/Firebase/FirebaseFunctions";
 import { Navigate } from "react-router-dom";
 import NotificationsSection from "./Components/NotificationsPage/NotificationsSection";
 import YourPostsSection from "./Components/YourPosts/YourPostsSection";
+import ConnectionSection from "./Components/connections/connectionSection";
 const App = () => {
   const { isLoggedin } = useAuthStatus();
   return (
@@ -16,9 +17,10 @@ const App = () => {
         <Route path="/" element={<Loginpage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/feed/notifications" element={<NotificationsSection />} />
-        <Route path="/notifications" element={<NotificationsSection />} />
+        <Route path="/findusers" element={<NotificationsSection />} />
         <Route path="/yourposts/:userId" element={<YourPostsSection />} />
         <Route path="/feed/yourposts/:userId" element={<YourPostsSection />} />
+        <Route path="/connections" element={<ConnectionSection/>} />
         <Route
           path="/feed"
           element={

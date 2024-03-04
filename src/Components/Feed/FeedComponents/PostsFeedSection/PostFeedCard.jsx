@@ -71,7 +71,7 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
     setIsLiked(!isLiked);
     setIsClicked(true); // Set state to indicate that the button is clicked
 
-    likePost(userId, postId)
+    likePost(userId, postId, auth.currentUser.displayName)
       .then(() => {
         console.log("Like toggled successfully");
         setIsClicked(false); // Reset state after successful like action
@@ -214,13 +214,13 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
       </div>
       {isCommentExpanded && (
         <motion.div
-          className="p-5"
+          className="p-5 "
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
         >
           <motion.textarea
-            className="w-full  border rounded-lg p-2 mb-4 break-words h-auto  "
+            className="w-full border rounded-lg p-3 mb-4 break-words h-auto text-sm" // Adjust styling properties
             placeholder="Write your comment..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
@@ -228,8 +228,9 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
           ></motion.textarea>
+
           <motion.button
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+            className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg" // Adjust styling properties
             onClick={handleComments}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -237,6 +238,7 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
           >
             Submit
           </motion.button>
+
           {userComments.length > 0 && (
             <div className="mt-4 space-y-5 break-all">
               {userComments.map((comment, index) => (
@@ -244,11 +246,15 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
                   {userComments.length > 0 && <div className="border-t"></div>}
                   <motion.div
                     key={comment.id}
-                    className="flex items-start space-x-3"
+                    className="flex items-start space-x-3  pt-3"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{
+                      delay: index * 0.1,
+                      duration: 0.3,
+                      ease: "easeInOut",
+                    }}
                   >
                     {" "}
                     <div>
@@ -258,10 +264,10 @@ const PostFeedCard = ({ name, message, userId, postId, timestamp }) => {
                       />
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-gray-700 text-sm mb-1">
+                      <p className="text-gray-700 text-xs mb-1">
                         {comment.timestamp ? formatDate(comment.timestamp) : ""}
                       </p>
-                      <p className="text-gray-800 break-words">
+                      <p className="text-gray-900 break-words text-sm">
                         {comment.myname}: {comment.comment}
                       </p>
                     </div>
