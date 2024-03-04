@@ -36,7 +36,7 @@ const ConnectionSection = () => {
     fetchData(); // Call the fetch function here
   }, [loggedInUser]);
 
-console.log(filteredRequests);
+
  
 const formatDate = (timestamp) => {
   const options = {

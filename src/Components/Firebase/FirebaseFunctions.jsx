@@ -380,7 +380,7 @@ export const getConnectionsByStatus = async (receiverId, senderId) => {
       collection(db, "connections"),
       where("receiverId", "==", receiverId),
       where("senderId", "==", senderId),
-      where("status", "==", 'accepted')
+      where("status", "==", "accepted")
     );
 
     const snapshot = await getDocs(q);
@@ -389,7 +389,100 @@ export const getConnectionsByStatus = async (receiverId, senderId) => {
       id: doc.id,
       data: doc.data(),
     }));
-   
+
+    return connections;
+  } catch (error) {
+    console.error("Error fetching connections:", error);
+    throw error;
+  }
+};
+export const acceptedRequests = async (userId) => {
+  try {
+    const q = collection(db, "connections");
+
+    const snapshot = await getDocs(
+      query(
+        q,
+        where("receiverId", "==", userId),
+        where("status", "==", "accepted")
+      )
+    );
+
+    const connections = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
+    console.log(connections);
+    return connections;
+  } catch (error) {
+    console.error("Error fetching connections:", error);
+    throw error;
+  }
+};
+
+export const acceptedRequests2 = async (userId) => {
+  try {
+    const q = collection(db, "connections");
+
+    const snapshot = await getDocs(
+      query(
+        q,
+        where("status", "==", "accepted"),
+        where("senderId", "==", userId)
+      )
+    );
+
+    const connections = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
+    console.log(connections);
+    return connections;
+  } catch (error) {
+    console.error("Error fetching connections:", error);
+    throw error;
+  }
+};
+export const pendingRequests = async (userId) => {
+  try {
+    const q = collection(db, "connections");
+
+    const snapshot = await getDocs(
+      query(
+        q,
+        where("status", "==", "pending"),
+        where("receiverId", "==", userId)
+      )
+    );
+
+    const connections = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
+    console.log(connections);
+    return connections;
+  } catch (error) {
+    console.error("Error fetching connections:", error);
+    throw error;
+  }
+};
+export const pendingRequests2 = async (userId) => {
+  try {
+    const q = collection(db, "connections");
+
+    const snapshot = await getDocs(
+      query(
+        q,
+        where("status", "==", "pending"),
+        where("senderId", "==", userId)
+      )
+    );
+
+    const connections = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
+    console.log(connections);
     return connections;
   } catch (error) {
     console.error("Error fetching connections:", error);
