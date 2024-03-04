@@ -20,7 +20,7 @@ import { useAuthStatus, logout } from "../Firebase/FirebaseFunctions";
 export default function MyNavbar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 const { user } = useAuthStatus()
-  const menuItems = ["Home", "Messages", "Notifications", "FindUsers","YourPosts"];
+  const menuItems = ["Home", "Messages", "Connections", "FindUsers","YourPosts"];
 
   return (
     <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
