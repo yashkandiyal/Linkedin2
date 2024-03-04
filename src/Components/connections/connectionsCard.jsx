@@ -17,6 +17,7 @@ const ConnectionsCard = ({
   status,
   senderName,
   receiverName,
+  timestamp,
 }) => {
   const [requestSent, setRequestSent] = useState(false);
   const [connectionAccepted, setConnectionAccepted] = useState(false);
@@ -68,59 +69,68 @@ const ConnectionsCard = ({
 
   return (
     <div className="mt-10">
-      {loggedInUser === userId && status === "accepted" && (
-        <div className="bg-slate-300 w-fit p-6 text-lg">
-          <p className="text-gray-700 text-lg">
+      {loggedInUser === userId && status === "accepted" ? (
+        <div className="bg-slate-300 w-fit p-6 text-lg border border-gray-400 rounded-lg shadow-md">
+          <p className="text-gray-700 font-bold text-xl">
             Connected with: {receiverName}
-          </p>
+          </p>{" "}
+          <p className="text-gray-700 text-sm">Connected at: {timestamp}</p>
           <p className="text-gray-500">Studies at: GGSIPU</p>
         </div>
-      )}
-
-      {loggedInUser === receiver && (
-        <>
-          {connectionStatus === "accepted" && (
-            <>
-              <div className="bg-slate-300 w-fit p-6 text-lg">
-                <p className="text-gray-700">Connected with: {senderName}</p>
+      ) : (
+        loggedInUser === receiver && (
+          <>
+            {connectionStatus === "accepted" && (
+              <div className="bg-slate-300 w-fit p-6 text-lg border border-gray-400 rounded-lg shadow-md">
+                <p className="text-gray-700 font-bold text-xl">
+                  Connected with: {senderName}
+                </p>
+                <p className="text-gray-700 text-sm">
+                  Connected at: {timestamp}
+                </p>
                 <p className="text-gray-500">Studies at: GGSIPU</p>
               </div>
-            </>
-          )}
+            )}
 
-          {status === "accepted" && connectionStatus !== "accepted" && (
-            <div className="bg-slate-300 w-fit p-6 text-lg">
-              <p className="text-gray-700">Connected with: {senderName}</p>
-              <p className="text-gray-500">Studies at: GGSIPU</p>
-            </div>
-          )}
+            {status === "accepted" && connectionStatus !== "accepted" && (
+              <div className="bg-slate-300 w-fit p-6 text-lg border border-gray-400 rounded-lg shadow-md">
+                <p className="text-gray-700 font-bold text-xl">
+                  Connected with: {senderName}
+                </p>
+                <p className="text-gray-700 text-sm">
+                  Connected at: {timestamp}
+                </p>
+                <p className="text-gray-500">Studies at: GGSIPU</p>
+              </div>
+            )}
 
-          {status === "pending" && connectionStatus !== "accepted" && (
-            <div className="flex items-center">
-              {connectionStatus === "declined" ? (
-                <></>
-              ) : (
-                <>
-                  <p className="text-gray-700 mr-4">
-                    Sender name: {senderName}
-                  </p>
-                  <button
-                    className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-                    onClick={acceptConnection}
-                  >
-                    Accept
-                  </button>
-                  <button
-                    className="bg-red-500 text-white px-4 py-2 rounded"
-                    onClick={declineConnection}
-                  >
-                    Decline
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-        </>
+            {status === "pending" && connectionStatus !== "accepted" && (
+              <div className="flex items-center">
+                {connectionStatus === "declined" ? (
+                  <></>
+                ) : (
+                  <>
+                    <p className="text-gray-700 mr-4">
+                      Sender name: {senderName}
+                    </p>
+                    <button
+                      className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+                      onClick={acceptConnection}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                      onClick={declineConnection}
+                    >
+                      Decline
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </>
+        )
       )}
     </div>
   );

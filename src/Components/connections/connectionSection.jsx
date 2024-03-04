@@ -37,6 +37,24 @@ const ConnectionSection = () => {
   }, [loggedInUser]);
 
 console.log(filteredRequests);
+ 
+const formatDate = (timestamp) => {
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false, // Use 24-hour format
+  };
+
+  // Ensure that timestamp is defined before calling toDate()
+  return timestamp
+    ? new Date(timestamp.toDate()).toLocaleString("en-US", options)
+    : "";
+};
+
   return (
     <>
       <MyNavbar />
@@ -50,6 +68,9 @@ console.log(filteredRequests);
             status={request.data.status}
             senderName={request.data.senderName}
             receiverName={request.data.receiverName}
+            timestamp={
+              request.data.timestamp ? formatDate(request.data.timestamp) : ""
+            }
           />
         ))}
       </div>
