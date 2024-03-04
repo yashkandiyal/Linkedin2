@@ -22,7 +22,12 @@ const ConnectionSection = () => {
           );
         });
 
-        setFilteredRequests(filteredRequests);
+        // Sort filteredRequests based on timestamp
+        const sortedRequests = filteredRequests.sort((a, b) => {
+          return (b.data.timestamp) - (a.data.timestamp);
+        });
+
+        setFilteredRequests(sortedRequests);
       } catch (error) {
         console.error("Error fetching connection info:", error);
       }

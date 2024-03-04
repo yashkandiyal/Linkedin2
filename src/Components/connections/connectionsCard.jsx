@@ -17,24 +17,28 @@ const ConnectionsCard = ({
   status,
   senderName,
   receiverName,
-  
 }) => {
   const [requestSent, setRequestSent] = useState(false);
   const [connectionAccepted, setConnectionAccepted] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState("pending");
   const [connectionList, setConnectionList] = useState([]);
-  const [show,setshow]=useState(false)
+  const [show, setshow] = useState(false);
   useEffect(() => {
-    
-  checkConnectionRequest(userId,receiver).then((e)=>setshow(e));
-   
-  }, [])
-  
+    checkConnectionRequest(userId, receiver).then((e) => setshow(e));
+  }, []);
+
   useEffect(() => {
     getConnectionsByStatus(receiver, userId)
       .then((connections) => setConnectionList(connections))
       .catch((error) => console.error("Error fetching connections:", error));
-  }, [receiver, userId, connectionList, connectionStatus, connectionAccepted,show]);
+  }, [
+    receiver,
+    userId,
+    connectionList,
+    connectionStatus,
+    connectionAccepted,
+    show,
+  ]);
 
   const loggedInUser = auth.currentUser?.uid;
 
@@ -89,12 +93,6 @@ const ConnectionsCard = ({
               <p className="text-gray-700">Connected with: {senderName}</p>
               <p className="text-gray-500">Studies at: GGSIPU</p>
             </div>
-          )}
-
-          {connectionStatus === "declined" && (
-            <h3 className="text-red-500 text-xl">
-              Request declined successfully
-            </h3>
           )}
 
           {status === "pending" && connectionStatus !== "accepted" && (
