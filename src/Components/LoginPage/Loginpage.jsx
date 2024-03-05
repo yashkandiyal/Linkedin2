@@ -9,39 +9,46 @@ import {
 import GoogleSvg from "./GoogleSvg";
 
 const LoginPage = () => {
-const status = useAuthStatus();
-console.log(status);
-const [pw, setpw] = useState("");
-const [email, setEmail] = useState("");
-const navigate = useNavigate();
-const { isLoggedin } = useAuthStatus();
-useEffect(() => {
-  if (isLoggedin) {
-    navigate("/feed");
-  }
-}, [isLoggedin,navigate]);
+  const status = useAuthStatus();
+  console.log(status);
+  const [pw, setpw] = useState("");
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const { isLoggedin } = useAuthStatus();
+  useEffect(() => {
+    if (isLoggedin) {
+      navigate("/feed");
+    }
+  }, [isLoggedin, navigate]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login(email, pw);
+      // Set logged in status in session storage upon successful login
+      sessionStorage.setItem("isLoggedIn", "true");
+    } catch (error) {
+      // Handle login error
+    }
+  };
 
+  const loginGoogle = async () => {
+    try {
+      await loginWithGoogle();
+      // Set logged in status in session storage upon successful Google login
+      sessionStorage.setItem("isLoggedIn", "true");
+    } catch (error) {
+      // Handle Google login error
+    }
+  };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    await login(email, pw);
-    // Set logged in status in local storage upon successful login
-   
-  } catch (error) {}
-};
+  useEffect(() => {
+    sessionStorage.getItem("isLoggedIn") === "true";
+  }, []);
 
-const loginGoogle = async () => {
-  try {
-    await loginWithGoogle();
-    // Set logged in status in local storage upon successful login
-   
-  } catch (error) {}
-};
-const goToRegister = () => {
-  navigate("/register");
-};
+  const goToRegister = () => {
+    navigate("/register");
+  };
 
   return (
     <form onSubmit={handleSubmit}>
