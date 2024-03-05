@@ -97,7 +97,7 @@ export default function MyNavbar() {
             Connections
             {pending > 0 ? (
               <>
-                <div>({pending})</div>
+                <span>({pending})</span>
               </>
             ) : (
               <></>
