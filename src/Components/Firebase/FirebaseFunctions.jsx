@@ -21,12 +21,9 @@ import {
   onSnapshot,
   where,
   Timestamp,
-  setDoc,
-  deleteDoc,
   runTransaction,
-  Firestore,
-  arrayUnion,
 } from "firebase/firestore";
+const db = getFirestore(firebaseApp);
 export const createUser = async (email, pw, firstName, lastName) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
@@ -71,18 +68,17 @@ export const useAuthStatus = () => {
       setUser(user);
     });
 
-    // Cleanup function to unsubscribe from the listener
     return () => unsubscribe();
   }, []);
 
-  const isLoggedin = !!user; // Determine if user is logged in
+  const isLoggedin = !!user;
 
-  return { user, isLoggedin }; // Return both user and login status
+  return { user, isLoggedin };
 };
 export const logout = async () => {
   await signOut(auth);
 };
-const db = getFirestore(firebaseApp);
+
 export const storeData = async (name, message, id) => {
   try {
     const timestamp = Timestamp.now().toDate();
@@ -182,7 +178,7 @@ export const isPostLikedByUser = async (userId, postId) => {
   }
 };
 const commentsCollection = collection(db, "comments");
-
+//FUNCTION TO POST COMMENTS
 export const postComments = async (myname, postId, comment) => {
   try {
     const timestamp = Timestamp.now().toDate();
@@ -198,6 +194,7 @@ export const postComments = async (myname, postId, comment) => {
     throw error;
   }
 };
+//FUNCTION TO FETCH COMMENTS
 export const getComments = async (postId, setuserComments) => {
   try {
     let commentQuery = query(commentsCollection, where("postId", "==", postId));
@@ -210,7 +207,6 @@ export const getComments = async (postId, setuserComments) => {
         };
       });
 
-      // Sort comments based on the timestamp property in descending order
       comments.sort((a, b) => {
         const timeA = a.timestamp;
         const timeB = b.timestamp;
@@ -225,7 +221,7 @@ export const getComments = async (postId, setuserComments) => {
   }
 };
 
-// Function to send a connection request
+// Function to send a connection request AND RETURN CONNECTION ID
 export const sendConnectionRequest = async (
   senderId,
   receiverId,
@@ -253,7 +249,7 @@ export const sendConnectionRequest = async (
 
 export const checkConnectionRequest = async (senderId, receiverId) => {
   try {
-    // Check if there is a pending or accepted connection request
+  
     const connectionQuerySender = query(
       collection(db, "connections"),
       where("senderId", "==", senderId),
@@ -303,7 +299,7 @@ export const updateConnectionRequestStatus = async (connectionId, status) => {
   }
 };
 
-// Function to update user connections after accepting a request
+// FUNCTION TO ACCEPT A CONNECTION REQUEST
 export const acceptConnectionRequest = async (connectionId) => {
   try {
     const connectionDocRef = doc(db, "connections", connectionId);
@@ -321,6 +317,7 @@ export const acceptConnectionRequest = async (connectionId) => {
     throw error;
   }
 };
+//FUNCTION TO DECLINE A CONNECTION REQUEST
 export const declineConnectionRequest = async (connectionId) => {
   try {
     const connectionDocRef = doc(db, "connections", connectionId);
@@ -331,7 +328,6 @@ export const declineConnectionRequest = async (connectionId) => {
     throw error;
   }
 };
-// Assuming you have a Firebase instance named 'db'
 
 export const checkConnectionRequestsData = async (userId) => {
   try {
@@ -356,8 +352,6 @@ export const checkConnectionRequestsData = async (userId) => {
 
 // Function to get connections for a user
 export const getConnectionsForUser = async (userId) => {
-  // Query the "connections" collection for documents involving the user
-  // You might want to adjust this based on your actual database structure
   const connectionQuery = query(
     collection(db, "connections"),
     where("senderId", "==", userId),
@@ -368,12 +362,12 @@ export const getConnectionsForUser = async (userId) => {
   const connections = [];
 
   connectionSnapshot.forEach((doc) => {
-    // Process each connection document
     connections.push(doc.data());
   });
 
   return connections;
 };
+//FUNCTION TO FETCH ALL THE ACCEPTED REQUESTS
 export const getConnectionsByStatus = async (receiverId, senderId) => {
   try {
     const q = query(
@@ -396,6 +390,7 @@ export const getConnectionsByStatus = async (receiverId, senderId) => {
     throw error;
   }
 };
+//FUNCTION TO FETCH ALL ACCEPTED CONNECTION REQUESTS WHERE THE LOGGEDIN USER IS RECEIVER
 export const acceptedRequests = async (userId) => {
   try {
     const q = collection(db, "connections");
@@ -419,7 +414,7 @@ export const acceptedRequests = async (userId) => {
     throw error;
   }
 };
-
+//FUNCTION TO FETCH ALL ACCEPTED CONNECTION REQUESTS WHERE THE LOGGEDIN USER IS SENDER
 export const acceptedRequests2 = async (userId) => {
   try {
     const q = collection(db, "connections");
@@ -443,6 +438,8 @@ export const acceptedRequests2 = async (userId) => {
     throw error;
   }
 };
+////FUNCTION TO FETCH ALL PENDING CONNECTION REQUESTS WHERE THE LOGGEDIN USER IS RECEIVER
+
 export const pendingRequests = async (userId) => {
   try {
     const q = collection(db, "connections");
@@ -466,6 +463,8 @@ export const pendingRequests = async (userId) => {
     throw error;
   }
 };
+//FUNCTION TO FETCH ALL PENDING CONNECTION REQUESTS WHERE THE LOGGEDIN USER IS SENDER
+
 export const pendingRequests2 = async (userId) => {
   try {
     const q = collection(db, "connections");

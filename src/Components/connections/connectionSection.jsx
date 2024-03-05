@@ -24,7 +24,7 @@ const ConnectionSection = () => {
 
         // Sort filteredRequests based on timestamp
         const sortedRequests = filteredRequests.sort((a, b) => {
-          return (b.data.timestamp) - (a.data.timestamp);
+          return b.data.timestamp - a.data.timestamp;
         });
 
         setFilteredRequests(sortedRequests);
@@ -35,25 +35,23 @@ const ConnectionSection = () => {
 
     fetchData(); // Call the fetch function here
   }, [loggedInUser]);
+  console.log(filteredRequests);
+  const formatDate = (timestamp) => {
+    const options = {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false, // Use 24-hour format
+    };
 
-
- 
-const formatDate = (timestamp) => {
-  const options = {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    hour12: false, // Use 24-hour format
+    // Ensure that timestamp is defined before calling toDate()
+    return timestamp
+      ? new Date(timestamp.toDate()).toLocaleString("en-US", options)
+      : "";
   };
-
-  // Ensure that timestamp is defined before calling toDate()
-  return timestamp
-    ? new Date(timestamp.toDate()).toLocaleString("en-US", options)
-    : "";
-};
 
   return (
     <>

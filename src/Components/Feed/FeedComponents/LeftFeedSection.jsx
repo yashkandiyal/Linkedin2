@@ -1,29 +1,41 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar } from "@nextui-org/react";
 import { Link } from "react-router-dom";
-import { acceptedRequests, acceptedRequests2, pendingRequests, pendingRequests2 } from './../../Firebase/FirebaseFunctions';
+import {
+  acceptedRequests,
+  acceptedRequests2,
+  pendingRequests,
+  pendingRequests2,
+} from "./../../Firebase/FirebaseFunctions";
 import { auth } from "../../Firebase/FirebaseConfig";
 
 const LeftFeedSection = ({ user }) => {
   const [acceptConnectionRequest, setAcceptConnectionRequest] = useState([]);
-const [acceptConnectionRequest2, setAcceptConnectionRequest2] = useState([]);
-const [pendingConnectionRequest, setpendingConnectionRequest] = useState([]);
-const [pendingConnectionRequest2, setpendingConnectionRequest2] = useState([]);
-
+  const [acceptConnectionRequest2, setAcceptConnectionRequest2] = useState([]);
+  const [pendingConnectionRequest, setpendingConnectionRequest] = useState([]);
+  const [pendingConnectionRequest2, setpendingConnectionRequest2] = useState(
+    []
+  );
 
   useEffect(() => {
-    acceptedRequests(auth.currentUser.uid).then((e) => setAcceptConnectionRequest(e));
-     acceptedRequests2(auth.currentUser.uid).then((e) => setAcceptConnectionRequest2(e));
-     pendingRequests(auth.currentUser.uid).then((e) =>
-       setpendingConnectionRequest(e)
-     );
-     pendingRequests2(auth.currentUser.uid).then((e) =>
-       setpendingConnectionRequest2(e)
-     );
+    acceptedRequests(auth.currentUser.uid).then((e) =>
+      setAcceptConnectionRequest(e)
+    );
+    acceptedRequests2(auth.currentUser.uid).then((e) =>
+      setAcceptConnectionRequest2(e)
+    );
+    pendingRequests(auth.currentUser.uid).then((e) =>
+      setpendingConnectionRequest(e)
+    );
+    pendingRequests2(auth.currentUser.uid).then((e) =>
+      setpendingConnectionRequest2(e)
+    );
   }, []);
-  const acceptedRequestsNumber=acceptConnectionRequest.length+acceptConnectionRequest2.length
-  const pending = pendingConnectionRequest.length + pendingConnectionRequest2.length
-  
+  const acceptedRequestsNumber =
+    acceptConnectionRequest.length + acceptConnectionRequest2.length;
+  const pending =
+    pendingConnectionRequest.length + pendingConnectionRequest2.length;
+
   return (
     <div className="hidden lg:block border rounded-xl bg-white w-56 shadow-xl">
       <div className="flex flex-col h-full">
