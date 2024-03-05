@@ -2,13 +2,15 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCuMzpf9XmGVIi3t91rXvzCLqvVer0bWsM",
-  authDomain: "linkedin-clone-831a1.firebaseapp.com",
-  projectId: "linkedin-clone-831a1",
-  storageBucket: "linkedin-clone-831a1.appspot.com",
-  messagingSenderId: "137022567650",
-  appId: "1:137022567650:web:55a24dafe891293e011abb",
+  apiKey: import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env
+    .VITE_REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_REACT_APP_FIREBASE_APP_ID,
 };
+
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
