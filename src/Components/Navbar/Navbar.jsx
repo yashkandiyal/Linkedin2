@@ -27,10 +27,10 @@ export default function MyNavbar() {
     []
   );
   useEffect(() => {
-    pendingRequests(auth.currentUser.uid).then((e) =>
+    pendingRequests(auth?.currentUser?.uid).then((e) =>
       setpendingConnectionRequest(e)
     );
-    pendingRequests2(auth.currentUser.uid).then((e) =>
+    pendingRequests2(auth?.currentUser?.uid).then((e) =>
       setpendingConnectionRequest2(e)
     );
   }, []);

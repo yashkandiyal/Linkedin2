@@ -36,7 +36,7 @@ const MiddleFeedSection = ({
         </div>
         <div className="flex justify-around lg:gap-20 gap-5 mt-6 lg:mx-10">
           <div
-            className="flex gap-1 items-center cursor-pointer"
+            className="flex gap-1 items-center cursor-pointer hover:bg-slate-100 hover:rounded-lg  p-[0.35rem]"
             onClick={handleButtonClick}
           >
             <GallerySvg />
@@ -44,14 +44,14 @@ const MiddleFeedSection = ({
           </div>
 
           <div
-            className="flex gap-1 items-center cursor-pointer"
+            className="flex gap-1 items-center cursor-pointer hover:bg-slate-100 hover:rounded-lg  p-[0.35rem]"
             onClick={handleButtonClick}
           >
             <EventSvg />
-            <h2 className=" lg:text-lg text-sm">Event</h2>
+            <h2 className=" lg:text-lg text-sm ">Event</h2>
           </div>
           <div
-            className="flex gap-1 items-center cursor-pointer"
+            className="flex gap-1 items-center cursor-pointer hover:bg-slate-100 hover:rounded-lg  p-[0.35rem]"
             onClick={handleButtonClick}
           >
             <ArticleSvg />

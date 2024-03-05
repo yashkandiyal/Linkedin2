@@ -4,13 +4,14 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { Avatar } from "@nextui-org/react";
 import {
   sendConnectionRequest,
-  useAuthStatus,
   checkConnectionRequest,
-  checkConnectionRequestsData,
+  
 } from "../Firebase/FirebaseFunctions";
 import { auth } from "../Firebase/FirebaseConfig";
 import DoneIcon from "@mui/icons-material/Done";
-const NotificationCard = ({ name, userId }) => {
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+const FindUsersCard = ({ name, userId }) => {
   const loggedInUser = auth.currentUser?.uid;
   const [requestSent, setRequestSent] = useState(false);
   const [connectionExists, setConnectionExists] = useState(false);
@@ -22,6 +23,7 @@ const NotificationCard = ({ name, userId }) => {
         auth.currentUser.displayName,
         name
       );
+      toast.success("Connection request sent successfully")
       setRequestSent(true);
     } catch (error) {
       console.error("Error sending connection request:", error);
@@ -56,6 +58,8 @@ const NotificationCard = ({ name, userId }) => {
   }, [userId, requestSent, connectionExists]);
 
   return (
+    <>
+    <ToastContainer/>
     <motion.div
       className={`
         bg-white rounded-lg p-4 shadow-md flex items-center justify-between w-full mt-10 gap-6
@@ -98,16 +102,19 @@ const NotificationCard = ({ name, userId }) => {
               You
             </motion.div>
           )}
-          {auth.currentUser.uid !== userId && (
+          {auth?.currentUser.uid !== userId && (
             <PersonAddAlt1Icon
-              className="text-blue-500 cursor-pointer hover:text-blue-700"
+              className="text-blue-500 cursor-pointer hover:text-blue-700 hover:rounded-full hover:bg-blue-100 p-[0.35rem]"
               onClick={sendRequest}
+              fontSize="large"
             />
           )}
         </>
       )}
     </motion.div>
+    </>
+    
   );
 };
 
-export default NotificationCard;
+export default FindUsersCard;

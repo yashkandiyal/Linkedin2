@@ -6,9 +6,9 @@ import Register from "./Components/RegisterPage/Register";
 import Feed from "./Components/Feed/Feed";
 import { useAuthStatus } from "./Components/Firebase/FirebaseFunctions";
 import { Navigate } from "react-router-dom";
-import NotificationsSection from "./Components/NotificationsPage/NotificationsSection";
 import YourPostsSection from "./Components/YourPosts/YourPostsSection";
 import ConnectionSection from "./Components/connections/connectionSection";
+import FindUsersSection from "./Components/FindUsers/FindUsersSection";
 const App = () => {
   const { isLoggedin } = useAuthStatus();
   return (
@@ -16,11 +16,11 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Loginpage />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/feed/notifications" element={<NotificationsSection />} />
-        <Route path="/findusers" element={<NotificationsSection />} />
+        <Route path="/feed/notifications" element={<FindUsersSection />} />
+        <Route path="/findusers" element={<FindUsersSection />} />
         <Route path="/yourposts/:userId" element={<YourPostsSection />} />
         <Route path="/feed/yourposts/:userId" element={<YourPostsSection />} />
-        <Route path="/connections" element={<ConnectionSection/>} />
+        <Route path="/connections" element={<ConnectionSection />} />
         <Route
           path="/feed"
           element={

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import NotificationCard from "./NotificationCard";
+import FindUsersCard from "./FindUsersCard";
 import MyNavbar from "../Navbar/Navbar";
 import { fetchData } from "../Firebase/FirebaseFunctions";
 
-const NotificationsSection = () => {
+const FindUsersSection = () => {
   const [uniqueUsers, setUniqueUsers] = useState([]);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const NotificationsSection = () => {
         {/* Render unique users using NotificationCard component */}
         {uniqueUsers.map((user) => (
           <div key={user.id} className="mb-5 md:w-1/2 lg:w-1/3 xl:w-1/4">
-            <NotificationCard userId={user.id} name={user.name} />
+            <FindUsersCard userId={user.id} name={user.name} />
           </div>
         ))}
       </div>
@@ -46,4 +46,4 @@ const NotificationsSection = () => {
   );
 };
 
-export default NotificationsSection;
+export default FindUsersSection;
