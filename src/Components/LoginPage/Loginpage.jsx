@@ -25,27 +25,16 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       await login(email, pw);
-      // Set logged in status in session storage upon successful login
-      sessionStorage.setItem("isLoggedIn", "true");
-    } catch (error) {
-      // Handle login error
-    }
+      // Set logged in status in local storage upon successful login
+    } catch (error) {}
   };
 
   const loginGoogle = async () => {
     try {
       await loginWithGoogle();
-      // Set logged in status in session storage upon successful Google login
-      sessionStorage.setItem("isLoggedIn", "true");
-    } catch (error) {
-      // Handle Google login error
-    }
+      
+    } catch (error) {}
   };
-
-  useEffect(() => {
-    sessionStorage.getItem("isLoggedIn") === "true";
-  }, []);
-
   const goToRegister = () => {
     navigate("/register");
   };
