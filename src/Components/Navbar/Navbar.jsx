@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -7,20 +7,43 @@ import {
   NavbarMenu,
   NavbarContent,
   NavbarItem,
-  Button,
-  Avatar,
   Input,
 } from "@nextui-org/react";
 import LinkedinSvg from "./LinkedinSvg";
 import { SearchIcon } from "./SearchIcon";
 import { NavLink } from "react-router-dom";
 import AvatarDropdown from "./AvatarDropdown";
-import { useAuthStatus, logout } from "../Firebase/FirebaseFunctions";
+import {
+  pendingRequests,
+  pendingRequests2,
+  useAuthStatus,
+} from "../Firebase/FirebaseFunctions";
+import { auth } from "../Firebase/FirebaseConfig";
 
 export default function MyNavbar() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-const { user } = useAuthStatus()
-  const menuItems = ["Home", "Messages", "Connections", "FindUsers","YourPosts"];
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [pendingConnectionRequest, setpendingConnectionRequest] = useState([]);
+  const [pendingConnectionRequest2, setpendingConnectionRequest2] = useState(
+    []
+  );
+  useEffect(() => {
+    pendingRequests(auth.currentUser.uid).then((e) =>
+      setpendingConnectionRequest(e)
+    );
+    pendingRequests2(auth.currentUser.uid).then((e) =>
+      setpendingConnectionRequest2(e)
+    );
+  }, []);
+  const pending =
+    pendingConnectionRequest.length + pendingConnectionRequest2.length;
+  const { user } = useAuthStatus();
+  const menuItems = [
+    "Home",
+    "Messages",
+    "Connections",
+    "FindUsers",
+    "YourPosts",
+  ];
 
   return (
     <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
@@ -70,7 +93,16 @@ const { user } = useAuthStatus()
           <NavLink to="/feed">Home</NavLink>
         </NavbarItem>
         <NavbarItem>
-          <NavLink to="/connections">Connections</NavLink>
+          <NavLink to="/connections">
+            Connections
+            {pending > 0 ? (
+              <>
+                <div>({pending})</div>
+              </>
+            ) : (
+              <></>
+            )}
+          </NavLink>
         </NavbarItem>
         <NavbarItem isActive>
           <NavLink to="/messages">Messages</NavLink>

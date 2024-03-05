@@ -25,14 +25,12 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       await login(email, pw);
-      // Set logged in status in local storage upon successful login
     } catch (error) {}
   };
 
   const loginGoogle = async () => {
     try {
       await loginWithGoogle();
-      
     } catch (error) {}
   };
   const goToRegister = () => {
