@@ -9,8 +9,7 @@ import {
 } from "../Firebase/FirebaseFunctions";
 import { auth } from "../Firebase/FirebaseConfig";
 import DoneIcon from "@mui/icons-material/Done";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 const FindUsersCard = ({ name, userId }) => {
   const loggedInUser = auth.currentUser?.uid;
   const [requestSent, setRequestSent] = useState(false);
@@ -25,7 +24,7 @@ const FindUsersCard = ({ name, userId }) => {
       );
       
       setRequestSent(true);
-      toast.success("Connection request sent successfully")
+      
     } catch (error) {
       console.error("Error sending connection request:", error);
     }
@@ -60,7 +59,7 @@ const FindUsersCard = ({ name, userId }) => {
 
   return (
     <>
-    <ToastContainer/>
+    
     <motion.div
       className={`
         bg-white rounded-lg p-4 shadow-md flex items-center justify-between w-full mt-10 gap-6
