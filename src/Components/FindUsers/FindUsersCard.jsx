@@ -23,8 +23,9 @@ const FindUsersCard = ({ name, userId }) => {
         auth.currentUser.displayName,
         name
       );
-      toast.success("Connection request sent successfully")
+      
       setRequestSent(true);
+      toast.success("Connection request sent successfully")
     } catch (error) {
       console.error("Error sending connection request:", error);
     }
